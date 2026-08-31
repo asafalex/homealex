@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>HomeAlex — Real Estate Portfolio</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --good:#166534;
+      --good-bg:#dcfce7;
+      --warn:#92400e;
+      --warn-bg:#fef3c7;
+      --shadow:0 10px 30px rgba(15,23,42,.07);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    button,input{font:inherit}
+    .hidden{display:none!important}
+
+    /* Login */
+    #loginScreen{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(59,130,246,.12), transparent 30%),
+        radial-gradient(circle at 85% 85%, rgba(16,185,129,.10), transparent 28%),
+        var(--bg);
+    }
+    .login-card{
+      width:min(420px,100%);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:32px;
+      box-shadow:var(--shadow);
+      text-align:center;
+    }
+    .home-icon{
+      width:72px;height:72px;border-radius:22px;
+      display:grid;place-items:center;
+      margin:0 auto 16px;
+      background:#111827;color:#fff;font-size:32px;
+    }
+    .login-card h1{margin:0 0 8px;font-size:30px}
+    .login-card p{margin:0 0 24px;color:var(--muted)}
+    .pw{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 16px;
+      outline:none;
+      background:#fff;
+    }
+    .pw:focus{border-color:#9ca3af;box-shadow:0 0 0 4px rgba(17,24,39,.05)}
+    .login-btn{
+      width:100%;
+      margin-top:12px;
+      border:0;
+      border-radius:14px;
+      padding:14px 16px;
+      background:#111827;
+      color:#fff;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .error{color:#b91c1c;margin-top:12px;font-size:14px;min-height:20px}
+
+    /* App */
+    .wrap{max-width:1280px;margin:auto;padding:28px 20px 60px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      margin-bottom:24px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-badge{
+      width:46px;height:46px;border-radius:15px;background:#111827;color:white;
+      display:grid;place-items:center;font-size:22px;
+    }
+    .brand h1{margin:0;font-size:26px}
+    .brand small{color:var(--muted)}
+    .logout{
+      border:1px solid var(--line);background:#fff;border-radius:12px;
+      padding:10px 14px;cursor:pointer;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;margin-bottom:24px;
+    }
+    .metric{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:20px;box-shadow:var(--shadow);
+    }
+    .metric .label{color:var(--muted);font-size:14px;margin-bottom:8px}
+    .metric .value{font-size:28px;font-weight:800;letter-spacing:-.6px}
+    .metric .sub{margin-top:7px;color:var(--muted);font-size:13px}
+
+    .section-head{
+      display:flex;justify-content:space-between;align-items:end;gap:12px;
+      margin:28px 2px 14px;
+    }
+    .section-head h2{margin:0;font-size:22px}
+    .section-head span{color:var(--muted);font-size:13px}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+    .property{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:19px;box-shadow:var(--shadow);
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .prop-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .flag{font-size:28px}
+    .property h3{margin:0;font-size:18px;line-height:1.35}
+    .location{color:var(--muted);font-size:13px;margin-top:4px}
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;
+      border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;
+      background:var(--good-bg);color:var(--good);white-space:nowrap;
+    }
+    .pill.invest{background:var(--warn-bg);color:var(--warn)}
+    .income{
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      padding:14px 0;
+    }
+    .income .main{font-size:25px;font-weight:800}
+    .income .fx{color:var(--muted);font-size:13px;margin-top:4px}
+    .details{display:grid;gap:9px;font-size:13px}
+    .row{display:flex;justify-content:space-between;gap:16px}
+    .row span:first-child{color:var(--muted)}
+    .note{
+      padding:11px 12px;border-radius:14px;background:#f9fafb;color:#4b5563;
+      font-size:12px;line-height:1.5;
+    }
+
+    .footer{
+      margin-top:28px;color:var(--muted);font-size:12px;text-align:center;
+    }
+
+    @media (max-width:1000px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:640px){
+      .wrap{padding:18px 14px 40px}
+      .grid{grid-template-columns:1fr}
+      .summary{grid-template-columns:1fr 1fr}
+      .metric{padding:16px}
+      .metric .value{font-size:22px}
+      .topbar{align-items:flex-start}
+      .brand h1{font-size:22px}
+    }
+  </style>
+</head>
+<body>
+
+  <section id="loginScreen">
+    <div class="login-card">
+      <div class="home-icon">⌂</div>
+      <h1>HomeAlex</h1>
+      <p>Real Estate Portfolio</p>
+      <input id="password" class="pw" type="password" placeholder="סיסמה" autocomplete="current-password">
+      <button class="login-btn" onclick="login()">כניסה</button>
+      <div id="loginError" class="error"></div>
+    </div>
+  </section>
+
+  <main id="app" class="hidden">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-badge">⌂</div>
+          <div>
+            <h1>HomeAlex</h1>
+            <small>Real Estate Portfolio</small>
+          </div>
+        </div>
+        <button class="logout" onclick="logout()">יציאה</button>
+      </div>
+
+      <section class="summary">
+        <div class="metric">
+          <div class="label">נכסים / השקעות</div>
+          <div class="value">7</div>
+          <div class="sub">ישראל + חו״ל</div>
+        </div>
+        <div class="metric">
+          <div class="label">הכנסה חודשית משוערת</div>
+          <div class="value" id="monthlyTotal">—</div>
+          <div class="sub">כולל ממוצע חלוקות גרמניה</div>
+        </div>
+        <div class="metric">
+          <div class="label">הכנסה שנתית משוערת</div>
+          <div class="value" id="annualTotal">—</div>
+          <div class="sub">לפני הוצאות ומסים</div>
+        </div>
+        <div class="metric">
+          <div class="label">הכנסה מחו״ל</div>
+          <div class="value" id="foreignTotal">—</div>
+          <div class="sub">יוון + ארה״ב + גרמניה</div>
+        </div>
+      </section>
+
+      <div class="section-head">
+        <h2>הנכסים שלי</h2>
+        <span>כל הסכומים בש״ח הם הערכה לפי שערים שמוגדרים בקובץ</span>
+      </div>
+
+      <section class="grid" id="propertyGrid"></section>
+
+      <div class="footer">
+        HomeAlex · Personal dashboard · הנתונים מוצגים לצורכי מעקב אישי בלבד
+      </div>
+    </div>
+  </main>
+
+<script>
+  // Basic client-side gate only. GitHub Pages is public hosting.
+  // This is not a replacement for Supabase Auth / real access control.
+  const SITE_PASSWORD = "Odelia27!";
+  const AUTH_COOKIE = "homealex_auth";
+  const COOKIE_DAYS = 7;
+
+  // Approximate FX rates — edit here whenever you want.
+  const FX = {
+    EUR_ILS: 3.454,
+    USD_ILS: 2.966
+  };
+
+  const properties = [
+    {
+      country:"ישראל", flag:"🇮🇱", name:"שועלי שמשון 7, דירה 1", city:"רמת גן",
+      type:"שכירות", currency:"ILS", income:6250, ownership:"100%",
+      lease:"07.09.2026 – 06.09.2027", note:"ועד בית: 430 ₪ על השוכרת; ארנונה על השוכרת."
+    },
+    {
+      country:"ישראל", flag:"🇮🇱", name:"הרואה 190", city:"רמת גן",
+      type:"שכירות", currency:"ILS", income:3800, ownership:"100%",
+      lease:"15.09.2026 – 14.09.2027", note:"ללא אופציה להארכה. ארנונה, מים, חשמל, גז וועד בית על השוכרים."
+    },
+    {
+      country:"ישראל", flag:"🇮🇱", name:"סירקין 29", city:"",
+      type:"שכירות", currency:"ILS", income:2000, ownership:"⅓",
+      lease:"26.07.2026 – 25.07.2027", note:"שכר הדירה לנכס 6,000 ₪. חלקך 2,000 ₪. באופציה: 6,420 ₪ לנכס / 2,140 ₪ חלקך."
+    },
+    {
+      country:"יוון", flag:"🇬🇷", name:"דירה באתונה", city:"Athens",
+      type:"שכירות", currency:"EUR", income:320, ownership:"100%",
+      lease:"—", note:"הכנסה חודשית €320."
+    },
+    {
+      country:"ארה״ב", flag:"🇺🇸", name:"5219 Warrington Ave", city:"Philadelphia, PA 19143",
+      type:"שכירות", currency:"USD", income:900, ownership:"100%",
+      lease:"—", note:"הכנסה חודשית $900."
+    },
+    {
+      country:"ארה״ב", flag:"🇺🇸", name:"2533 S. Millick St", city:"Philadelphia, PA 19142",
+      type:"שכירות", currency:"USD", income:900, ownership:"100%",
+      lease:"—", note:"הכנסה חודשית $900."
+    },
+    {
+      country:"גרמניה", flag:"🇩🇪", name:"Beyond Taunusquartier / BMW", city:"Munich",
+      type:"השקעת נדל״ן", currency:"EUR", income:2312, ownership:"השקעה",
+      lease:"חלוקה רבעונית", note:"ממוצע חודשי €2,312 לפי 5 חלוקות: €5,933, €5,933, €10,040, €6,503, €6,275. השקעה: €200,035."
+    }
+  ];
+
+  function toILS(p){
+    if(p.currency === "ILS") return p.income;
+    if(p.currency === "EUR") return p.income * FX.EUR_ILS;
+    if(p.currency === "USD") return p.income * FX.USD_ILS;
+    return 0;
+  }
+
+  function nativeAmount(p){
+    const n = p.income.toLocaleString("en-US", {maximumFractionDigits:0});
+    if(p.currency === "ILS") return `${n} ₪`;
+    if(p.currency === "EUR") return `€${n}`;
+    if(p.currency === "USD") return `$${n}`;
+    return n;
+  }
+
+  function ils(v){
+    return Math.round(v).toLocaleString("he-IL") + " ₪";
+  }
+
+  function render(){
+    const grid = document.getElementById("propertyGrid");
+    grid.innerHTML = "";
+
+    let monthly = 0;
+    let foreign = 0;
+
+    properties.forEach(p=>{
+      const v = toILS(p);
+      monthly += v;
+      if(p.country !== "ישראל") foreign += v;
+
+      const el = document.createElement("article");
+      el.className = "property";
+      el.innerHTML = `
+        <div class="prop-top">
+          <div>
+            <div class="flag">${p.flag}</div>
+            <h3>${p.name}</h3>
+            <div class="location">${p.city || p.country}</div>
+          </div>
+          <div class="pill ${p.type.includes("השקעה") ? "invest" : ""}">${p.type}</div>
+        </div>
+
+        <div class="income">
+          <div class="main">${nativeAmount(p)}</div>
+          <div class="fx">${p.currency === "ILS" ? "לחודש" : "≈ " + ils(v) + " לחודש"}</div>
+        </div>
+
+        <div class="details">
+          <div class="row"><span>מדינה</span><strong>${p.country}</strong></div>
+          <div class="row"><span>בעלות</span><strong>${p.ownership}</strong></div>
+          <div class="row"><span>חוזה / תדירות</span><strong>${p.lease}</strong></div>
+        </div>
+
+        <div class="note">${p.note}</div>
+      `;
+      grid.appendChild(el);
+    });
+
+    document.getElementById("monthlyTotal").textContent = "≈ " + ils(monthly);
+    document.getElementById("annualTotal").textContent = "≈ " + ils(monthly * 12);
+    document.getElementById("foreignTotal").textContent = "≈ " + ils(foreign);
+  }
+
+  function setCookie(name,value,days){
+    const d = new Date();
+    d.setTime(d.getTime() + days*24*60*60*1000);
+    document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+  }
+
+  function getCookie(name){
+    const prefix = name + "=";
+    const parts = document.cookie.split(";");
+    for(let part of parts){
+      part = part.trim();
+      if(part.startsWith(prefix)) return decodeURIComponent(part.substring(prefix.length));
+    }
+    return null;
+  }
+
+  function showApp(){
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    render();
+  }
+
+  function login(){
+    const pw = document.getElementById("password").value;
+    const err = document.getElementById("loginError");
+    if(pw === SITE_PASSWORD){
+      setCookie(AUTH_COOKIE, "ok", COOKIE_DAYS);
+      err.textContent = "";
+      showApp();
+    } else {
+      err.textContent = "סיסמה שגויה";
+    }
+  }
+
+  function logout(){
+    setCookie(AUTH_COOKIE, "", -1);
+    location.reload();
+  }
+
+  document.getElementById("password").addEventListener("keydown", e=>{
+    if(e.key === "Enter") login();
+  });
+
+  if(getCookie(AUTH_COOKIE) === "ok"){
+    showApp();
+  }
+</script>
+</body>
+</html>
