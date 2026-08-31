@@ -240,8 +240,8 @@ const RPC_URL = `${SUPABASE_URL}/rest/v1/rpc/get_property_dashboard_with_passwor
 const FX = { EUR_ILS: 3.454, USD_ILS: 2.966 };
 let currentPassword = "";
 let dashboard = {properties:[], distributions:[]};
-const FLAGS = {Israel:"🇮🇱", Greece:"🇬🇷", USA:"🇺🇸", Germany:"🇩🇪"};
-const COUNTRY_HE = {Israel:"ישראל", Greece:"יוון", USA:"ארה״ב", Germany:"גרמניה"};
+const FLAGS = {Israel:"🇮🇱", Greece:"🇬🇷", Cyprus:"🇨🇾", USA:"🇺🇸", Germany:"🇩🇪"};
+const COUNTRY_HE = {Israel:"ישראל", Greece:"יוון", Cyprus:"קפריסין", USA:"ארה״ב", Germany:"גרמניה"};
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
 async function fetchDashboard(password){
  const res=await fetch(RPC_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({p_password:password})});
@@ -261,7 +261,7 @@ function toILS(a,c){a=Number(a||0);return c==="ILS"?a:c==="EUR"?a*FX.EUR_ILS:c==
 function ils(v){return Math.round(v).toLocaleString("he-IL")+" ₪";}
 function germanMonthlyAverage(p){const rows=(dashboard.distributions||[]).filter(d=>d.property_id===p.id);if(!rows.length)return{amount:Number(p.monthly_income_amount||0),currency:p.monthly_income_currency||"EUR",count:0};const total=rows.reduce((s,d)=>s+Number(d.amount||0),0);return{amount:(total/rows.length)/3,currency:"EUR",count:rows.length};}
 function incomeFor(p){return p.category==="investment"?germanMonthlyAverage(p):{amount:Number(p.monthly_income_amount||0),currency:p.monthly_income_currency||p.rent_currency||"ILS",count:0};}
-function titleFor(p){return ({shualei_shimshon_7:"שועלי שמשון 7, דירה 1",haroee_190:"הרואה 190",sirkin_29:"סירקין 29",athens_apartment:"דירה באתונה",warrington_5219:"5219 Warrington Ave",millick_2533:"2533 S. Millick St",beyond_taunusquartier:"Beyond Taunusquartier / BMW"})[p.property_key]||p.address||p.property_key;}
+function titleFor(p){return ({shualei_shimshon_7:"שועלי שמשון 7, דירה 1",haroee_190:"הרואה 190",sirkin_29:"סירקין 29",athens_apartment:"דירה באתונה",cyprus_apartment_1:"דירה 1 – קפריסין",cyprus_apartment_2:"דירה 2 – קפריסין",warrington_5219:"5219 Warrington Ave",millick_2533:"2533 S. Millick St",beyond_taunusquartier:"Beyond Taunusquartier / BMW"})[p.property_key]||p.address||p.property_key;}
 function ownership(p){if(p.category==="investment")return"השקעה";const x=Number(p.ownership_share);if(!Number.isFinite(x))return"—";if(Math.abs(x-1/3)<.01)return"⅓";return x<=1?Math.round(x*100)+"%":String(x);}
 function lease(p){if(p.category==="investment")return"חלוקה רבעונית";if(!p.lease_start&&!p.lease_end)return"—";return `${formatDate(p.lease_start)} – ${formatDate(p.lease_end)}`;}
 function noteFor(p,inc){if(p.category!=="investment")return p.notes||"";const rows=(dashboard.distributions||[]).filter(d=>d.property_id===p.id);const amounts=rows.map(d=>`€${Number(d.amount).toLocaleString("en-US",{maximumFractionDigits:0})}`).join(", ");return `ממוצע חודשי מחושב אוטומטית מתוך ${inc.count} חלוקות${amounts?": "+amounts:""}. השקעה: ${p.investment_amount?"€"+Number(p.investment_amount).toLocaleString("en-US"):"—"}.`;}
