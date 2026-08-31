@@ -1,284 +1,346 @@
-
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0f172a" />
-  <title>HomeAlex — Real Estate Portfolio v2</title>
+  <title>HomeAlex — Real Estate Portfolio</title>
   <style>
     :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --accent:#111827;
-      --good:#166534;
-      --good-bg:#dcfce7;
-      --warn:#92400e;
-      --warn-bg:#fef3c7;
-      --shadow:0 10px 30px rgba(15,23,42,.07);
-      --radius:22px;
+      --bg:#f5f7fb;--card:#fff;--text:#0f172a;--muted:#667085;--line:#e5e7eb;
+      --good:#166534;--good-bg:#dcfce7;--warn:#92400e;--warn-bg:#fef3c7;
+      --shadow:0 10px 30px rgba(15,23,42,.06);--radius:24px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
-    button,input{font:inherit}
-    .hidden{display:none!important}
-
-    /* Login */
-    #loginScreen{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:24px;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(59,130,246,.12), transparent 30%),
-        radial-gradient(circle at 85% 85%, rgba(16,185,129,.10), transparent 28%),
-        var(--bg);
-    }
-    .login-card{
-      width:min(420px,100%);
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:32px;
-      box-shadow:var(--shadow);
-      text-align:center;
-    }
-    .home-icon{
-      width:72px;height:72px;border-radius:22px;
-      display:grid;place-items:center;
-      margin:0 auto 16px;
-      background:#111827;color:#fff;font-size:32px;
-    }
-    .login-card h1{margin:0 0 8px;font-size:30px}
-    .login-card p{margin:0 0 24px;color:var(--muted)}
-    .pw{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px 16px;
-      outline:none;
-      background:#fff;
-    }
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    button,input{font:inherit}.hidden{display:none!important}
+    #loginScreen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 10%,rgba(59,130,246,.11),transparent 30%),radial-gradient(circle at 85% 85%,rgba(16,185,129,.09),transparent 28%),var(--bg)}
+    .login-card{width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:28px;padding:32px;box-shadow:var(--shadow);text-align:center}
+    .home-icon{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;margin:0 auto 16px;background:#0f172a;color:#fff;font-size:32px}
+    .login-card h1{margin:0 0 6px;font-size:30px}.login-card p{margin:0 0 24px;color:var(--muted)}
+    .pw{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;outline:none;background:#fff}
     .pw:focus{border-color:#9ca3af;box-shadow:0 0 0 4px rgba(17,24,39,.05)}
-    .login-btn{
-      width:100%;
-      margin-top:12px;
-      border:0;
-      border-radius:14px;
-      padding:14px 16px;
-      background:#111827;
-      color:#fff;
-      cursor:pointer;
-      font-weight:700;
-    }
+    .login-btn{width:100%;margin-top:12px;border:0;border-radius:14px;padding:14px 16px;background:#0f172a;color:#fff;cursor:pointer;font-weight:700}
     .error{color:#b91c1c;margin-top:12px;font-size:14px;min-height:20px}
-
-    /* App */
     .wrap{max-width:1280px;margin:auto;padding:28px 20px 60px}
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:16px;
-      margin-bottom:24px;
-    }
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand-badge{
-      width:46px;height:46px;border-radius:15px;background:#111827;color:white;
-      display:grid;place-items:center;font-size:22px;
-    }
-    .brand h1{margin:0;font-size:26px}
-    .brand small{color:var(--muted)}
-    .logout{
-      border:1px solid var(--line);background:#fff;border-radius:12px;
-      padding:10px 14px;cursor:pointer;
-    }
-
-    .summary{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:14px;margin-bottom:24px;
-    }
-    .metric{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      padding:20px;box-shadow:var(--shadow);
-    }
-    .metric .label{color:var(--muted);font-size:14px;margin-bottom:8px}
-    .metric .value{font-size:28px;font-weight:800;letter-spacing:-.6px}
-    .metric .sub{margin-top:7px;color:var(--muted);font-size:13px}
-
-    .section-head{
-      display:flex;justify-content:space-between;align-items:end;gap:12px;
-      margin:28px 2px 14px;
-    }
-    .section-head h2{margin:0;font-size:22px}
-    .section-head span{color:var(--muted);font-size:13px}
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-    }
-    .property{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      padding:19px;box-shadow:var(--shadow);
-      display:flex;flex-direction:column;gap:14px;
-    }
-    .prop-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-    .flag{font-size:28px}
-    .property h3{margin:0;font-size:18px;line-height:1.35}
-    .location{color:var(--muted);font-size:13px;margin-top:4px}
-    .pill{
-      display:inline-flex;align-items:center;gap:6px;
-      border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;
-      background:var(--good-bg);color:var(--good);white-space:nowrap;
-    }
-    .pill.invest{background:var(--warn-bg);color:var(--warn)}
-    .income{
-      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-      padding:14px 0;
-    }
-    .income .main{font-size:25px;font-weight:800}
-    .income .fx{color:var(--muted);font-size:13px;margin-top:4px}
-    .details{display:grid;gap:9px;font-size:13px}
-    .row{display:flex;justify-content:space-between;gap:16px}
-    .row span:first-child{color:var(--muted)}
-    .note{
-      padding:11px 12px;border-radius:14px;background:#f9fafb;color:#4b5563;
-      font-size:12px;line-height:1.5;
-    }
-
-    .footer{
-      margin-top:28px;color:var(--muted);font-size:12px;text-align:center;
-    }
-
-    @media (max-width:1000px){
-      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
-    }
-    @media (max-width:640px){
-      .wrap{padding:18px 14px 40px}
-      .grid{grid-template-columns:1fr}
-      .summary{grid-template-columns:1fr 1fr}
-      .metric{padding:16px}
-      .metric .value{font-size:22px}
-      .topbar{align-items:flex-start}
-      .brand h1{font-size:22px}
-    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+    .brand{display:flex;align-items:center;gap:12px}.brand-badge{width:46px;height:46px;border-radius:15px;background:#0f172a;color:white;display:grid;place-items:center;font-size:22px}
+    .brand h1{margin:0;font-size:26px}.brand small{color:var(--muted)}
+    .actions{display:flex;gap:8px}.topbtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+    .metric{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .metric .label{color:var(--muted);font-size:14px;margin-bottom:8px}.metric .value{font-size:28px;font-weight:800;letter-spacing:-.6px}.metric .sub{margin-top:7px;color:var(--muted);font-size:13px}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:28px 2px 14px}.section-head h2{margin:0;font-size:22px}.section-head span{color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .property{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+    .prop-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.flag{font-size:28px}.property h3{margin:0;font-size:18px;line-height:1.35}.location{color:var(--muted);font-size:13px;margin-top:4px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;background:var(--good-bg);color:var(--good);white-space:nowrap}.pill.invest{background:var(--warn-bg);color:var(--warn)}
+    .income{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}.income .main{font-size:25px;font-weight:800}.income .fx{color:var(--muted);font-size:13px;margin-top:4px}
+    .details{display:grid;gap:9px;font-size:13px}.row{display:flex;justify-content:space-between;gap:16px}.row span:first-child{color:var(--muted)}
+    .note{padding:11px 12px;border-radius:14px;background:#f9fafb;color:#4b5563;font-size:12px;line-height:1.5}
+    .loading{padding:60px 20px;text-align:center;color:var(--muted)}
+    .footer{margin-top:28px;color:var(--muted);font-size:12px;text-align:center}
+    @media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.wrap{padding:18px 14px 40px}.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.metric{padding:16px}.metric .value{font-size:22px}.topbar{align-items:flex-start}.brand h1{font-size:22px}}
   </style>
 </head>
 <body>
 
-  <section id="loginScreen">
-    <div class="login-card">
-      <div class="home-icon">⌂</div>
-      <h1>HomeAlex</h1>
-      <p>Real Estate Portfolio</p>
-      <input id="password" class="pw" type="password" placeholder="סיסמה" autocomplete="current-password">
-      <button class="login-btn" onclick="login()">כניסה</button>
-      <div id="loginError" class="error"></div>
-    </div>
-  </section>
+<section id="loginScreen">
+  <div class="login-card">
+    <div class="home-icon">⌂</div>
+    <h1>HomeAlex</h1>
+    <p>Real Estate Portfolio</p>
+    <input id="password" class="pw" type="password" placeholder="סיסמה" autocomplete="current-password">
+    <button id="loginBtn" class="login-btn" onclick="login()">כניסה</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</section>
 
-  <main id="app" class="hidden">
-    <div class="wrap">
-      <div class="topbar">
-        <div class="brand">
-          <div class="brand-badge">⌂</div>
-          <div>
-            <h1>HomeAlex</h1>
-            <small>Real Estate Portfolio</small>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px"><button class="logout" onclick="refreshData()">רענון</button><button class="logout" onclick="logout()">יציאה</button></div>
+<main id="app" class="hidden">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-badge">⌂</div>
+        <div><h1>HomeAlex</h1><small>Supabase Live Portfolio</small></div>
       </div>
-
-      <section class="summary">
-        <div class="metric">
-          <div class="label">נכסים / השקעות</div>
-          <div class="value" id="assetCount">—</div>
-          <div class="sub">נטען ישירות מ-Supabase</div>
-        </div>
-        <div class="metric">
-          <div class="label">הכנסה חודשית משוערת</div>
-          <div class="value" id="monthlyTotal">—</div>
-          <div class="sub">כולל ממוצע חלוקות גרמניה</div>
-        </div>
-        <div class="metric">
-          <div class="label">הכנסה שנתית משוערת</div>
-          <div class="value" id="annualTotal">—</div>
-          <div class="sub">לפני הוצאות ומסים</div>
-        </div>
-        <div class="metric">
-          <div class="label">הכנסה מחו״ל</div>
-          <div class="value" id="foreignTotal">—</div>
-          <div class="sub">יוון + ארה״ב + גרמניה</div>
-        </div>
-      </section>
-
-      <div class="section-head">
-        <h2>הנכסים שלי</h2>
-        <span>הנתונים מתעדכנים ישירות מ-Supabase</span>
-      </div>
-
-      <section class="grid" id="propertyGrid"></section>
-
-      <div class="footer">
-        HomeAlex · Personal dashboard · הנתונים מוצגים לצורכי מעקב אישי בלבד
+      <div class="actions">
+        <button class="topbtn" onclick="refreshData()">רענון</button>
+        <button class="topbtn" onclick="logout()">יציאה</button>
       </div>
     </div>
-  </main>
+
+    <section class="summary">
+      <div class="metric"><div class="label">נכסים / השקעות</div><div class="value" id="assetCount">—</div><div class="sub">נטען ישירות מ-Supabase</div></div>
+      <div class="metric"><div class="label">הכנסה חודשית משוערת</div><div class="value" id="monthlyTotal">—</div><div class="sub">כולל ממוצע החלוקות מגרמניה</div></div>
+      <div class="metric"><div class="label">הכנסה שנתית משוערת</div><div class="value" id="annualTotal">—</div><div class="sub">לפני הוצאות ומסים</div></div>
+      <div class="metric"><div class="label">הכנסה מחו״ל</div><div class="value" id="foreignTotal">—</div><div class="sub">יוון + קפריסין + ארה״ב + גרמניה</div></div>
+    </section>
+
+    <div class="section-head">
+      <h2>הנכסים שלי</h2>
+      <span id="lastUpdated">—</span>
+    </div>
+
+    <section id="propertyGrid" class="grid">
+      <div class="loading">טוען נתונים מ-Supabase…</div>
+    </section>
+
+    <div class="footer">HomeAlex · הנתונים נמשכים בזמן אמת מ-Supabase</div>
+  </div>
+</main>
 
 <script>
 const SUPABASE_URL = "https://pfhabpuzcxcfnuetrdln.supabase.co";
 const SUPABASE_KEY = "sb_publishable_L3U7coYuTu2u4-4eR9XYfw_ShA49ueL";
 const RPC_URL = `${SUPABASE_URL}/rest/v1/rpc/get_property_dashboard_with_password`;
+
+// שערי המרה משוערים לתצוגה בלבד.
 const FX = { EUR_ILS: 3.454, USD_ILS: 2.966 };
+
 let currentPassword = "";
 let dashboard = {properties:[], distributions:[]};
-const FLAGS = {Israel:"🇮🇱", Greece:"🇬🇷", Cyprus:"🇨🇾", USA:"🇺🇸", Germany:"🇩🇪"};
-const COUNTRY_HE = {Israel:"ישראל", Greece:"יוון", Cyprus:"קפריסין", USA:"ארה״ב", Germany:"גרמניה"};
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+
+const FLAGS = {
+  Israel:"🇮🇱", Greece:"🇬🇷", Cyprus:"🇨🇾", USA:"🇺🇸", Germany:"🇩🇪"
+};
+
+const COUNTRY_HE = {
+  Israel:"ישראל", Greece:"יוון", Cyprus:"קפריסין", USA:"ארה״ב", Germany:"גרמניה"
+};
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
 async function fetchDashboard(password){
- const res=await fetch(RPC_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({p_password:password})});
- if(!res.ok){let msg="שגיאה בטעינת הנתונים";try{const e=await res.json();if(e.code==="28000"||String(e.message||"").toLowerCase().includes("password"))msg="סיסמה שגויה";}catch(_){}throw new Error(msg);} return await res.json();
+  const res = await fetch(RPC_URL, {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "apikey":SUPABASE_KEY,
+      "Authorization":`Bearer ${SUPABASE_KEY}`
+    },
+    body:JSON.stringify({p_password:password})
+  });
+
+  if(!res.ok){
+    let msg = "שגיאה בטעינת הנתונים";
+    try{
+      const err = await res.json();
+      if(err.code === "28000" || String(err.message||"").toLowerCase().includes("password")) msg = "סיסמה שגויה";
+    }catch(e){}
+    throw new Error(msg);
+  }
+  return await res.json();
 }
+
 async function login(){
- const pw=document.getElementById("password").value,err=document.getElementById("loginError");
- if(!pw){err.textContent="יש להזין סיסמה";return;} err.textContent="";
- try{dashboard=await fetchDashboard(pw);currentPassword=pw;showApp();render();}catch(e){err.textContent=e.message;}
+  const btn = document.getElementById("loginBtn");
+  const err = document.getElementById("loginError");
+  const pw = document.getElementById("password").value;
+
+  if(!pw){ err.textContent="יש להזין סיסמה"; return; }
+
+  btn.disabled = true;
+  btn.textContent = "מתחבר…";
+  err.textContent = "";
+
+  try{
+    dashboard = await fetchDashboard(pw);
+    currentPassword = pw;
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    render();
+  }catch(e){
+    err.textContent = e.message;
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "כניסה";
+  }
 }
-function showApp(){document.getElementById("loginScreen").classList.add("hidden");document.getElementById("app").classList.remove("hidden");}
-function logout(){currentPassword="";dashboard={properties:[],distributions:[]};document.getElementById("app").classList.add("hidden");document.getElementById("loginScreen").classList.remove("hidden");document.getElementById("password").value="";}
-async function refreshData(){if(!currentPassword)return logout();document.getElementById("propertyGrid").innerHTML='<div class="loading">מרענן נתונים…</div>';try{dashboard=await fetchDashboard(currentPassword);render();}catch(e){document.getElementById("propertyGrid").innerHTML=`<div class="loading">${esc(e.message)}</div>`;}}
-function formatDate(v){if(!v)return"—";const [y,m,d]=String(v).split("-");return `${d}.${m}.${y}`;}
-function moneyNative(a,c){a=Number(a||0);if(c==="ILS")return `${a.toLocaleString("he-IL",{maximumFractionDigits:0})} ₪`;if(c==="EUR")return `€${a.toLocaleString("en-US",{maximumFractionDigits:2})}`;if(c==="USD")return `$${a.toLocaleString("en-US",{maximumFractionDigits:2})}`;return a.toLocaleString();}
-function toILS(a,c){a=Number(a||0);return c==="ILS"?a:c==="EUR"?a*FX.EUR_ILS:c==="USD"?a*FX.USD_ILS:0;}
-function ils(v){return Math.round(v).toLocaleString("he-IL")+" ₪";}
-function germanMonthlyAverage(p){const rows=(dashboard.distributions||[]).filter(d=>d.property_id===p.id);if(!rows.length)return{amount:Number(p.monthly_income_amount||0),currency:p.monthly_income_currency||"EUR",count:0};const total=rows.reduce((s,d)=>s+Number(d.amount||0),0);return{amount:(total/rows.length)/3,currency:"EUR",count:rows.length};}
-function incomeFor(p){return p.category==="investment"?germanMonthlyAverage(p):{amount:Number(p.monthly_income_amount||0),currency:p.monthly_income_currency||p.rent_currency||"ILS",count:0};}
-function titleFor(p){return ({shualei_shimshon_7:"שועלי שמשון 7, דירה 1",haroee_190:"הרואה 190",sirkin_29:"סירקין 29",athens_apartment:"דירה באתונה",cyprus_apartment_1:"דירה 1 – קפריסין",cyprus_apartment_2:"דירה 2 – קפריסין",warrington_5219:"5219 Warrington Ave",millick_2533:"2533 S. Millick St",beyond_taunusquartier:"Beyond Taunusquartier / BMW"})[p.property_key]||p.address||p.property_key;}
-function ownership(p){if(p.category==="investment")return"השקעה";const x=Number(p.ownership_share);if(!Number.isFinite(x))return"—";if(Math.abs(x-1/3)<.01)return"⅓";return x<=1?Math.round(x*100)+"%":String(x);}
-function lease(p){if(p.category==="investment")return"חלוקה רבעונית";if(!p.lease_start&&!p.lease_end)return"—";return `${formatDate(p.lease_start)} – ${formatDate(p.lease_end)}`;}
-function noteFor(p,inc){
-  if(p.property_key==="cyprus_apartment_1") return "כתובת זמנית — דירה 1 בקפריסין. שכירות חודשית €1,300.";
-  if(p.property_key==="cyprus_apartment_2") return "כתובת זמנית — דירה 2 בקפריסין. שכירות חודשית €1,320.";
-  if(p.category!=="investment") return p.notes||"";
-  const rows=(dashboard.distributions||[]).filter(d=>d.property_id===p.id);
-  const amounts=rows.map(d=>`€${Number(d.amount).toLocaleString("en-US",{maximumFractionDigits:0})}`).join(", ");
-  return `ממוצע חודשי מחושב אוטומטית מתוך ${inc.count} חלוקות${amounts?": "+amounts:""}. השקעה: ${p.investment_amount?"€"+Number(p.investment_amount).toLocaleString("en-US"):"—"}.`;
+
+async function refreshData(){
+  if(!currentPassword) return logout();
+  document.getElementById("propertyGrid").innerHTML = `<div class="loading">מרענן נתונים…</div>`;
+  try{
+    dashboard = await fetchDashboard(currentPassword);
+    render();
+  }catch(e){
+    document.getElementById("propertyGrid").innerHTML = `<div class="loading">לא ניתן לטעון את הנתונים: ${esc(e.message)}</div>`;
+  }
 }
+
+function logout(){
+  currentPassword = "";
+  dashboard = {properties:[],distributions:[]};
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("password").value = "";
+}
+
+function formatDate(v){
+  if(!v) return "—";
+  const [y,m,d] = String(v).split("-");
+  return `${d}.${m}.${y}`;
+}
+
+function moneyNative(amount,currency){
+  const n = Number(amount || 0);
+  if(currency==="ILS") return `${n.toLocaleString("he-IL",{maximumFractionDigits:0})} ₪`;
+  if(currency==="EUR") return `€${n.toLocaleString("en-US",{maximumFractionDigits:2})}`;
+  if(currency==="USD") return `$${n.toLocaleString("en-US",{maximumFractionDigits:2})}`;
+  return n.toLocaleString();
+}
+
+function toILS(amount,currency){
+  const n = Number(amount || 0);
+  if(currency==="ILS") return n;
+  if(currency==="EUR") return n * FX.EUR_ILS;
+  if(currency==="USD") return n * FX.USD_ILS;
+  return 0;
+}
+
+function ils(v){
+  return Math.round(v).toLocaleString("he-IL") + " ₪";
+}
+
+function investmentMonthlyAverage(property){
+  const rows = (dashboard.distributions || []).filter(d => d.property_id === property.id);
+  if(!rows.length){
+    return {
+      amount:Number(property.monthly_income_amount || 0),
+      currency:property.monthly_income_currency || "EUR",
+      count:0,
+      total:0
+    };
+  }
+  const total = rows.reduce((s,d)=>s+Number(d.amount||0),0);
+  return {
+    amount:(total / rows.length) / 3,
+    currency:"EUR",
+    count:rows.length,
+    total
+  };
+}
+
+function incomeFor(p){
+  if(p.category === "investment") return investmentMonthlyAverage(p);
+  return {
+    amount:Number(p.monthly_income_amount || 0),
+    currency:p.monthly_income_currency || p.rent_currency || "ILS",
+    count:0,
+    total:0
+  };
+}
+
+function propertyTitle(p){
+  const map = {
+    shualei_shimshon_7:"שועלי שמשון 7, דירה 1",
+    haroee_190:"הרואה 190",
+    sirkin_29:"סירקין 29",
+    athens_apartment:"דירה באתונה",
+    cyprus_apartment_1:"דירה 1 – קפריסין",
+    cyprus_apartment_2:"דירה 2 – קפריסין",
+    warrington_5219:"5219 Warrington Ave",
+    millick_2533:"2533 S. Millick St",
+    beyond_taunusquartier:"Beyond Taunusquartier / BMW"
+  };
+  return map[p.property_key] || p.address || p.property_key;
+}
+
+function ownershipText(p){
+  if(p.category==="investment") return "השקעה";
+  const share = Number(p.ownership_share);
+  if(!Number.isFinite(share)) return "—";
+  if(Math.abs(share - 1/3) < 0.01) return "⅓";
+  if(share <= 1) return Math.round(share*100) + "%";
+  return String(share);
+}
+
+function leaseText(p){
+  if(p.category==="investment") return "חלוקה רבעונית";
+  if(!p.lease_start && !p.lease_end) return "—";
+  return `${formatDate(p.lease_start)} – ${formatDate(p.lease_end)}`;
+}
+
+function noteFor(p,income){
+  if(p.property_key==="cyprus_apartment_1"){
+    return "כתובת זמנית — דירה 1 בקפריסין. שכירות חודשית €1,300.";
+  }
+  if(p.property_key==="cyprus_apartment_2"){
+    return "כתובת זמנית — דירה 2 בקפריסין. שכירות חודשית €1,320.";
+  }
+  if(p.category!=="investment"){
+    return p.notes || "";
+  }
+
+  const rows = (dashboard.distributions||[]).filter(d=>d.property_id===p.id);
+  const amounts = rows.map(d => `€${Number(d.amount).toLocaleString("en-US",{maximumFractionDigits:0})}`).join(", ");
+
+  return `ממוצע חודשי מחושב אוטומטית מתוך ${income.count} חלוקות${amounts ? ": "+amounts : ""}. השקעה: ${p.investment_amount ? "€"+Number(p.investment_amount).toLocaleString("en-US") : "—"}.`;
+}
+
 function render(){
- const properties=dashboard.properties||[],grid=document.getElementById("propertyGrid");grid.innerHTML="";let monthly=0,foreign=0;
- properties.forEach(p=>{const inc=incomeFor(p),v=toILS(inc.amount,inc.currency);monthly+=v;if(p.country!=="Israel")foreign+=v;const el=document.createElement("article");el.className="property";el.innerHTML=`<div class="prop-top"><div><div class="flag">${FLAGS[p.country]||"🏠"}</div><h3>${esc(titleFor(p))}</h3><div class="location">${esc(p.city||COUNTRY_HE[p.country]||p.country||"")}</div></div><div class="pill ${p.category==="investment"?"invest":""}">${p.category==="investment"?"השקעת נדל״ן":"שכירות"}</div></div><div class="income"><div class="main">${moneyNative(inc.amount,inc.currency)}</div><div class="fx">${inc.currency==="ILS"?"לחודש":`≈ ${ils(v)} לחודש`}</div></div><div class="details"><div class="row"><span>מדינה</span><strong>${esc(COUNTRY_HE[p.country]||p.country)}</strong></div><div class="row"><span>בעלות</span><strong>${esc(ownership(p))}</strong></div><div class="row"><span>חוזה / תדירות</span><strong>${esc(lease(p))}</strong></div>${p.category==="rental"?`<div class="row"><span>אופציה</span><strong>${p.renewal_option?"כן":"לא"}</strong></div>`:""}</div>${noteFor(p,inc)?`<div class="note">${esc(noteFor(p,inc))}</div>`:""}`;grid.appendChild(el);});
- document.getElementById("assetCount").textContent=properties.length;document.getElementById("monthlyTotal").textContent="≈ "+ils(monthly);document.getElementById("annualTotal").textContent="≈ "+ils(monthly*12);document.getElementById("foreignTotal").textContent="≈ "+ils(foreign);
+  const properties = dashboard.properties || [];
+  const grid = document.getElementById("propertyGrid");
+  grid.innerHTML = "";
+
+  let monthly = 0;
+  let foreign = 0;
+
+  properties.forEach(p=>{
+    const income = incomeFor(p);
+    const valueILS = toILS(income.amount,income.currency);
+
+    monthly += valueILS;
+    if(p.country !== "Israel") foreign += valueILS;
+
+    const card = document.createElement("article");
+    card.className = "property";
+    card.innerHTML = `
+      <div class="prop-top">
+        <div>
+          <div class="flag">${FLAGS[p.country] || "🏠"}</div>
+          <h3>${esc(propertyTitle(p))}</h3>
+          <div class="location">${esc(p.city || COUNTRY_HE[p.country] || p.country || "")}</div>
+        </div>
+        <div class="pill ${p.category==="investment" ? "invest" : ""}">
+          ${p.category==="investment" ? "השקעת נדל״ן" : "שכירות"}
+        </div>
+      </div>
+
+      <div class="income">
+        <div class="main">${moneyNative(income.amount,income.currency)}</div>
+        <div class="fx">${income.currency==="ILS" ? "לחודש" : `≈ ${ils(valueILS)} לחודש`}</div>
+      </div>
+
+      <div class="details">
+        <div class="row"><span>מדינה</span><strong>${esc(COUNTRY_HE[p.country] || p.country)}</strong></div>
+        <div class="row"><span>בעלות</span><strong>${esc(ownershipText(p))}</strong></div>
+        <div class="row"><span>חוזה / תדירות</span><strong>${esc(leaseText(p))}</strong></div>
+        ${p.category==="rental" ? `<div class="row"><span>אופציה</span><strong>${p.renewal_option ? "כן" : "לא"}</strong></div>` : ""}
+      </div>
+
+      ${noteFor(p,income) ? `<div class="note">${esc(noteFor(p,income))}</div>` : ""}
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById("assetCount").textContent = properties.length;
+  document.getElementById("monthlyTotal").textContent = "≈ " + ils(monthly);
+  document.getElementById("annualTotal").textContent = "≈ " + ils(monthly*12);
+  document.getElementById("foreignTotal").textContent = "≈ " + ils(foreign);
+  document.getElementById("lastUpdated").textContent =
+    "עודכן מהמסד: " + new Date().toLocaleString("he-IL");
 }
-document.getElementById("password").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
+
+document.getElementById("password").addEventListener("keydown",e=>{
+  if(e.key==="Enter") login();
+});
 </script>
+
 </body>
 </html>
