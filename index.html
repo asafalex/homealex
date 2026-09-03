@@ -37,7 +37,7 @@
     .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700;background:var(--good-bg);color:var(--good);white-space:nowrap}.pill.invest{background:var(--warn-bg);color:var(--warn)}
     .income{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}.income .main{font-size:25px;font-weight:800}.income .fx{color:var(--muted);font-size:13px;margin-top:4px}
     .details{display:grid;gap:9px;font-size:13px}.row{display:flex;justify-content:space-between;gap:16px}.row span:first-child{color:var(--muted)}
-    .note{padding:11px 12px;border-radius:14px;background:#f9fafb;color:#4b5563;font-size:12px;line-height:1.5}
+    .note{padding:11px 12px;border-radius:14px;background:#f9fafb;color:#4b5563;font-size:12px;line-height:1.5}.alert-error{padding:12px 14px;border-radius:14px;background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;font-size:13px;font-weight:800;line-height:1.5}
     .loading{padding:60px 20px;text-align:center;color:var(--muted)}
     .footer{margin-top:28px;color:var(--muted);font-size:12px;text-align:center}
     @media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -266,6 +266,43 @@ function leaseText(p){
   return `${formatDate(p.lease_start)} – ${formatDate(p.lease_end)}`;
 }
 
+
+function daysUntil(dateValue){
+  if(!dateValue) return null;
+  const target = new Date(dateValue + "T00:00:00");
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.ceil((target - today) / 86400000);
+}
+
+function foreignPaymentRows(p){
+  if(p.country === "Israel" || p.category !== "rental") return "";
+  const lastDate = p.last_rent_payment_date ? formatDate(p.last_rent_payment_date) : "—";
+  const amount = p.last_rent_payment_amount
+    ? moneyNative(p.last_rent_payment_amount, p.last_rent_payment_currency || p.monthly_income_currency || p.rent_currency)
+    : "—";
+  const days = daysUntil(p.next_rent_payment_date);
+  let nextText = "—";
+  if(days !== null){
+    if(days > 0) nextText = `${days} ימים`;
+    else if(days === 0) nextText = "היום";
+    else nextText = `באיחור ${Math.abs(days)} ימים`;
+  }
+
+  return `
+    <div class="row"><span>תשלום שכירות אחרון</span><strong>${esc(lastDate)}</strong></div>
+    <div class="row"><span>סכום ששולם</span><strong>${esc(amount)}</strong></div>
+    <div class="row"><span>עד התשלום הבא</span><strong>${esc(nextText)}</strong></div>
+  `;
+}
+
+function alertFor(p){
+  if(p.alert_level === "error" && p.alert_text){
+    return `<div class="alert-error">⚠ ${esc(p.alert_text)}</div>`;
+  }
+  return "";
+}
+
 function noteFor(p,income){
   if(p.property_key==="cyprus_apartment_1"){
     return "כתובת זמנית — דירה 1 בקפריסין. שכירות חודשית €1,300.";
@@ -322,8 +359,10 @@ function render(){
         <div class="row"><span>בעלות</span><strong>${esc(ownershipText(p))}</strong></div>
         <div class="row"><span>חוזה / תדירות</span><strong>${esc(leaseText(p))}</strong></div>
         ${p.category==="rental" ? `<div class="row"><span>אופציה</span><strong>${p.renewal_option ? "כן" : "לא"}</strong></div>` : ""}
+        ${foreignPaymentRows(p)}
       </div>
 
+      ${alertFor(p)}
       ${noteFor(p,income) ? `<div class="note">${esc(noteFor(p,income))}</div>` : ""}
     `;
     grid.appendChild(card);
